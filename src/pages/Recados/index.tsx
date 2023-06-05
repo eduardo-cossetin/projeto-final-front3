@@ -1,6 +1,7 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import AppBarRecados from "../../config/components/AppBar";
 import BackgroundRecados from "../../config/components/Background";
+import MuiCard from "../../config/components/MuiCard";
 
 const RecadosPage = () => {
   return (
@@ -18,22 +19,22 @@ const RecadosPage = () => {
             width={"80%"}
             sx={{ backgroundColor: "white", borderRadius: "8px" }}
           >
-            <Box
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              height={"10vh"}
-              width={"100%"}
-              sx={{
-                backgroundColor: "black",
-                borderTopLeftRadius: "8px",
-                borderTopRightRadius: "8px",
-              }}
-            >
-              <Typography variant="h4" sx={{ color: "white" }}>
-                LISTA DE RECADOS
-              </Typography>
-            </Box>
+            <Grid container height={"10vh"} width={"100%"} sx={{}}>
+              <Grid item xs={12} textAlign={"center"}>
+                <Typography
+                  variant="h3"
+                  sx={{ color: "white", backgroundColor: "#1e3b37" }}
+                >
+                  LISTA DE RECADOS
+                </Typography>
+              </Grid>
+              <Box display={"flex"}>
+                <MuiCard />
+                <MuiCard />
+                <MuiCard />
+                <MuiCard />
+              </Box>
+            </Grid>
           </Box>
         </Box>
       </AppBarRecados>
