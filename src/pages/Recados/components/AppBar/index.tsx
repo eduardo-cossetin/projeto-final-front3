@@ -35,11 +35,9 @@ const AppBarRecados: React.FC<AppBarRecadosProps> = ({ children }) => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{ backgroundColor: "#1e3b37" }}>
         <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1 }}
-          ></Typography>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            LOGIN
+          </Typography>
           {auth && (
             <div>
               <IconButton

@@ -1,6 +1,7 @@
-import { Box, Button, FormControl, Grid, TextField } from "@mui/material";
-import BackgroundRecados from "../../config/components/Background";
-import Text from "../../config/components/Text";
+import { Box, Grid } from "@mui/material";
+import BackgroundRecados from "../../shared-components/BackgroundRecados";
+import Text from "../../shared-components/Text";
+import FormLogin from "./components/FormLogin";
 
 const Home = () => {
   return (
@@ -52,49 +53,13 @@ const Home = () => {
             sx={{ gap: 2 }}
           >
             <Text
-              variant="h3"
+              variant="h2"
               component="h2"
               sx={{ color: "#1e3b37", marginTop: "32px" }}
             >
               Login
             </Text>
-            <Box>
-              <FormControl sx={{ marginTop: "-32px" }}>
-                <TextField
-                  type="text"
-                  variant="outlined"
-                  label="Nome"
-                  sx={{ marginBottom: "8px" }}
-                />
-                <TextField
-                  label="Senha"
-                  type="password"
-                  variant="outlined"
-                  sx={{ marginBottom: "8px" }}
-                />
-                <Button
-                  variant="contained"
-                  sx={{ color: "white", backgroundColor: "#1e3b37" }}
-                >
-                  Entrar
-                </Button>
-              </FormControl>
-            </Box>
-            <Box>
-              <Text variant="p">Não tem conta? </Text>
-              <Button
-                variant="outlined"
-                sx={{
-                  color: "black",
-                  backgroundColor: "transparent",
-                  outlineColor: "red",
-                  border: "2px",
-                  borderColor: "red",
-                }}
-              >
-                CLIQUE AQUI!
-              </Button>
-            </Box>
+            <FormLogin />
           </Grid>
         </Grid>
       </Box>

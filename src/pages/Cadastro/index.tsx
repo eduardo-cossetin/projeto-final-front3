@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, FormLabel, TextField } from "@mui/material";
-import BackgroundRecados from "../../config/components/Background";
-import Text from "../../config/components/Text";
+import BackgroundRecados from "../../shared-components/BackgroundRecados";
+import Text from "../../shared-components/Text";
 
 const CadastroPage = () => {
   return (
@@ -16,7 +16,7 @@ const CadastroPage = () => {
           justifyContent={"center"}
           alignItems={"center"}
           flexDirection={"column"}
-          height={"85%"}
+          height={{ xs: "85%", xl: "65%" }}
           width={"55%"}
           sx={{
             backgroundImage: "initial",
@@ -93,6 +93,7 @@ const CadastroPage = () => {
                     }}
                   ></TextField>
                   <FormLabel
+                    color="primary"
                     sx={{
                       color: "#1e3b37",
                     }}

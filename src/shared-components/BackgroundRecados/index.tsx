@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import fundoRecados from "../../../assets/images/fundoRecados.jpg";
+import fundoRecados from "../../../src/assets/images/fundoRecados.jpg";
 
 interface fundoRecadosProps {
   children?: React.ReactNode;

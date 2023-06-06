@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
-import AppBarRecados from "../../config/components/AppBar";
-import BackgroundRecados from "../../config/components/Background";
-import MuiCard from "../../config/components/MuiCard";
+import BackgroundRecados from "../../shared-components/BackgroundRecados";
+import AppBarRecados from "./components/AppBar";
+import MuiCard from "./components/MuiCard";
 
 const RecadosPage = () => {
   return (
