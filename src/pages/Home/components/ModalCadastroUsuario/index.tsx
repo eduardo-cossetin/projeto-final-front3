@@ -14,6 +14,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import * as React from "react";
 import { useState } from "react";
 import Text from "../../../../shared-components/Text";
+import { useAppDispatch } from "../../../../store/hooks";
+import { adicionarUsuario } from "../../../../store/modules/Users/UsersSlice";
 
 interface ModalCadastroUsuarioProps {
   aberto: boolean;
@@ -24,13 +26,15 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
   aberto,
   mudarAberto,
 }) => {
+  const handleClose = () => {
+    mudarAberto(false);
+  };
+
   const [emailCadastro, setEmailCadastro] = useState<string>("");
   const [nomeCadastro, setNomeCadastro] = useState<string>("");
   const [senhaCadastro, setSenhaCadastro] = useState<string>("");
 
-  const handleClose = () => {
-    mudarAberto(false);
-  };
+  const dispatch = useAppDispatch();
 
   return (
     <Dialog
@@ -55,8 +59,28 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
         </IconButton>
       </DialogTitle>
       <Divider />
-      <DialogContent>
-        <Box>
+      <Box
+        component={"form"}
+        onSubmit={(ev) => {
+          ev.preventDefault();
+          //cadastrar um usuario - ESTADO GLOBAL
+          dispatch(
+            adicionarUsuario({
+              nome: nomeCadastro,
+              email: emailCadastro,
+              senha: senhaCadastro,
+            })
+          );
+          // limpar os campos de input
+          setNomeCadastro("");
+          setEmailCadastro("");
+          setSenhaCadastro("");
+
+          // fechar o modal
+          handleClose();
+        }}
+      >
+        <DialogContent>
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <TextField
@@ -123,23 +147,29 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
               ></TextField>
             </Grid>
           </Grid>
-        </Box>
-      </DialogContent>
+        </DialogContent>
 
-      <DialogActions>
-        <Box width={"100%"} display={"flex"} justifyContent={"space-around"}>
-          <Button
-            variant="contained"
-            onClick={handleClose}
-            sx={{ backgroundColor: "black" }}
-          >
-            Cancelar
-          </Button>
-          <Button variant="contained" onClick={handleClose} autoFocus>
-            Criar Conta
-          </Button>
-        </Box>
-      </DialogActions>
+        <DialogActions>
+          <Box width={"100%"} display={"flex"} justifyContent={"space-around"}>
+            <Button
+              variant="contained"
+              type="button"
+              onClick={handleClose}
+              sx={{ backgroundColor: "black" }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              onClick={handleClose}
+              autoFocus
+            >
+              Criar Conta
+            </Button>
+          </Box>
+        </DialogActions>
+      </Box>
     </Dialog>
   );
 };
