@@ -10,8 +10,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../../../shared-components/Loading";
 import { useAppDispatch } from "../../../../store/hooks";
-import { showLoading } from "../../../../store/modules/loading/loadingSlice";
+import {
+  hideLoading,
+  showLoading,
+} from "../../../../store/modules/loading/loadingSlice";
 
 interface AppBarRecadosProps {
   children?: React.ReactNode;
@@ -35,7 +39,7 @@ const AppBarRecados: React.FC<AppBarRecadosProps> = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const dispatch = useAppDispatch;
+  const dispatch = useAppDispatch();
 
   const logOut = () => {
     localStorage.removeItem("userLogged");
@@ -43,10 +47,9 @@ const AppBarRecados: React.FC<AppBarRecadosProps> = ({ children }) => {
 
     dispatch(showLoading());
     setTimeout(() => {
-      dispatch(hideNotification());
       dispatch(hideLoading());
       navigate("/");
-    }, 3000);
+    }, 2000);
   };
 
   return (
@@ -100,6 +103,7 @@ const AppBarRecados: React.FC<AppBarRecadosProps> = ({ children }) => {
         </Toolbar>
       </AppBar>
       {children}
+      <Loading />
     </Box>
   );
 };

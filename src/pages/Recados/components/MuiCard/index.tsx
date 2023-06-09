@@ -1,26 +1,59 @@
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+} from "@mui/material";
+import { v4 as generateId } from "uuid";
+import RecadosModel from "../../../../store/types/RecadosModel";
+
+const listaDeRecados: RecadosModel[] = [
+  {
+    id: generateId(),
+    title: "Recado",
+    description: "Descrição do recado",
+    createdAt: "08/06/2023",
+  },
+];
 
 const MuiCard = () => {
   return (
     <Box>
       <Card sx={{ backgroundColor: "grey", margin: 1 }}>
         <CardContent>
-          <Typography variant="h4" component="div">
-            Recado
-          </Typography>
-
-          <Typography variant="h6" color="InfoText">
-            Descrição do recado
-          </Typography>
-          <Typography variant="body2" color="InfoText">
-            Criado em: 00/00/0000
-          </Typography>
+          {listaDeRecados.map((recado) => {
+            return (
+              <>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Typography variant="h5">{recado.title}</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="h6">{recado.description}</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="caption">
+                      Criado em:{recado.createdAt}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </>
+            );
+          })}
         </CardContent>
-        <Box display={"flex"} justifyContent={"space-evenly"}>
-          <Button variant="contained" sx={{ backgroundColor: "red" }}>
+        <Box display={"flex"} justifyContent={"space-evenly"} height={"20px"}>
+          <Button
+            size="small"
+            variant="contained"
+            sx={{ backgroundColor: "black" }}
+          >
             APAGAR
           </Button>
-          <Button variant="contained">EDITAR</Button>
+          <Button size="small" variant="contained">
+            EDITAR
+          </Button>
         </Box>
       </Card>
     </Box>
