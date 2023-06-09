@@ -6,13 +6,18 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { SnackBarComp } from "../../../../shared-components/SnackBar";
 import Text from "../../../../shared-components/Text";
+import { useAppSelector } from "../../../../store/hooks";
+import { buscarUsuarios } from "../../../../store/modules/Users/UsersSlice";
+import { emailRegex } from "../../../../utils/validators/regexData";
 import {
   emailValidator,
   passwordValidator,
 } from "../../../../validators/inputs";
+import { IsValidCredentials } from "../../types/IsValidCredentials";
 import ModalCadastroUsuario from "../ModalCadastroUsuario";
 
 interface UserProps {
@@ -23,21 +28,52 @@ interface UserProps {
 
 const FormLogin = () => {
   const [email, setEmail] = useState("");
+  const [emailisValid, setEmailIsValid] = useState<IsValidCredentials>({
+    helperText: "",
+    isValid: true,
+  });
+
   const [password, setPassword] = useState("");
+
   const [isLogged, setIsLogged] = useState(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  //useAppSelector - buscar uma determinada propriedade/estado Global
+  const [users, setUsers] = useState<any>([]);
+  const navigate = useNavigate();
+  const select = useAppSelector(buscarUsuarios);
+
+  useEffect(() => {
+    if (email.length && !emailRegex.test(email)) {
+      setEmailIsValid({
+        helperText: "Email inválido",
+        isValid: false,
+      });
+      return;
+    }
+
+    setEmailIsValid({
+      helperText: "Utilize seu e-mail cadastrado para fazer o login.",
+      isValid: true,
+    });
+  }, [email]);
+
+  useEffect(() => {
+    if (
+      localStorage.getItem("userLogged") ||
+      sessionStorage.getItem("userLogged")
+    ) {
+      navigate("/recados");
+    }
+  }, [navigate]);
+
   const loggedUser = (
     event: React.SyntheticEvent<Element, Event>,
     checked: boolean
   ) => {
-    if (checked) {
-      setIsLogged(true);
-    } else {
-      setIsLogged(false);
-    }
+    setIsLogged(checked);
   };
 
   const verifySnack = (emailIsValid: boolean, passwordIsValid: boolean) => {
@@ -84,6 +120,26 @@ const FormLogin = () => {
     setIsOpen(true);
   };
 
+  const verifyUserExists = () => {
+    const user = select.find((user) => {
+      return user.email == email && user.senha === password;
+    });
+
+    if (!user) {
+      alert("usuario não existe");
+      return;
+    }
+
+    if (!isLogged) {
+      sessionStorage.setItem("userLogged", user.email);
+      return;
+    }
+
+    localStorage.setItem("userLogged", user.email);
+    alert("Achou");
+    navigate("/recados");
+  };
+
   return (
     <>
       <Box
@@ -91,14 +147,18 @@ const FormLogin = () => {
         onSubmit={(event) => {
           event.preventDefault();
           save();
+          verifyUserExists();
         }}
       >
         <Grid container spacing={1} flexDirection={"column"}>
           <Grid item xs={12}>
             <TextField
+              fullWidth
               type="text"
               variant="outlined"
               label="Email"
+              helperText={emailisValid.helperText}
+              error={!emailisValid.isValid}
               sx={{ marginBottom: "8px" }}
               onChange={(event) => {
                 setEmail(event.currentTarget.value);
@@ -110,6 +170,7 @@ const FormLogin = () => {
           <Grid item xs={12}>
             <TextField
               label="Senha"
+              fullWidth
               type="password"
               variant="outlined"
               sx={{ marginBottom: "8px" }}

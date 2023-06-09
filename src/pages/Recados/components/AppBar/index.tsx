@@ -1,15 +1,17 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import Button from "@mui/material/Button/Button";
 import FormGroup from "@mui/material/FormGroup";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Switch from "@mui/material/Switch";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../../store/hooks";
+import { showLoading } from "../../../../store/modules/loading/loadingSlice";
 
 interface AppBarRecadosProps {
   children?: React.ReactNode;
@@ -29,6 +31,22 @@ const AppBarRecados: React.FC<AppBarRecadosProps> = ({ children }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch;
+
+  const logOut = () => {
+    localStorage.removeItem("userLogged");
+    sessionStorage.removeItem("userLogged");
+
+    dispatch(showLoading());
+    setTimeout(() => {
+      dispatch(hideNotification());
+      dispatch(hideLoading());
+      navigate("/");
+    }, 3000);
   };
 
   return (
@@ -70,18 +88,14 @@ const AppBarRecados: React.FC<AppBarRecadosProps> = ({ children }) => {
             </div>
           )}
           <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  color="success"
-                  checked={auth}
-                  onChange={handleChange}
-                  aria-label="login switch"
-                  sx={{ color: "black" }}
-                />
-              }
-              label={auth ? "SAIR" : "LOGAR"}
-            />
+            <Button
+              variant="outlined"
+              size="small"
+              sx={{ backgroundColor: "white" }}
+              onClick={logOut}
+            >
+              Sair
+            </Button>
           </FormGroup>
         </Toolbar>
       </AppBar>

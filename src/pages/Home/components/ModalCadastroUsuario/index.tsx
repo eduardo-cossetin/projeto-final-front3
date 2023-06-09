@@ -11,11 +11,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import * as React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Text from "../../../../shared-components/Text";
 import { useAppDispatch } from "../../../../store/hooks";
 import { adicionarUsuario } from "../../../../store/modules/Users/UsersSlice";
+import { emailRegex } from "../../../../utils/validators/regexData";
+import { IsValidCredentials } from "../../types/IsValidCredentials";
 
 interface ModalCadastroUsuarioProps {
   aberto: boolean;
@@ -31,10 +32,93 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
   };
 
   const [emailCadastro, setEmailCadastro] = useState<string>("");
+  const [errorEmail, setErrorEmail] = useState<IsValidCredentials>({
+    helperText: "",
+    isValid: true,
+  });
+
   const [nomeCadastro, setNomeCadastro] = useState<string>("");
+  const [errorNome, setErrorNome] = useState<IsValidCredentials>({
+    helperText: "",
+    isValid: true,
+  });
+
   const [senhaCadastro, setSenhaCadastro] = useState<string>("");
+  const [errorSenha, setErrorSenha] = useState<IsValidCredentials>({
+    helperText: "",
+    isValid: true,
+  });
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (emailCadastro.length && !emailRegex.test(emailCadastro)) {
+      setErrorEmail({
+        helperText: "Informe um e-mail válido.",
+        isValid: false,
+      });
+    } else {
+      setErrorEmail({
+        helperText: "Utilize seu e-mail para criar uma conta.",
+        isValid: true,
+      });
+    }
+  }, [emailCadastro]);
+
+  useEffect(() => {
+    if (nomeCadastro.length && nomeCadastro.length < 3) {
+      setErrorNome({
+        helperText: "Informe um nome válido.",
+        isValid: false,
+      });
+    } else {
+      setErrorNome({
+        helperText: "Utilize seu e-mail para criar uma conta.",
+        isValid: true,
+      });
+    }
+  }, [nomeCadastro]);
+
+  // executa a callback sempre que o valor do estado é alterado
+  useEffect(() => {
+    if (senhaCadastro.length && senhaCadastro.length < 6) {
+      setErrorSenha({
+        helperText: "Cadastre uma senha com no mínimo 6 caracteres.",
+        isValid: false,
+      });
+    } else {
+      setErrorSenha({
+        helperText:
+          "Utilize uma senha fácil de lembrar e anote para não esquecer.",
+        isValid: true,
+      });
+    }
+  }, [senhaCadastro]);
+
+  const handleSignupUser = (ev: React.FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+
+    if (!ev.currentTarget.checkValidity()) {
+      return;
+    }
+
+    // cadastrar um usuario no ESTADO GLOBAL
+    dispatch(
+      adicionarUsuario({
+        nome: nomeCadastro,
+        email: emailCadastro,
+        senha: senhaCadastro,
+      })
+    );
+
+    // limpar os campos de input
+    setNomeCadastro("");
+    setEmailCadastro("");
+    setSenhaCadastro("");
+
+    // fechar o modal
+    handleClose();
+  };
 
   return (
     <Dialog
@@ -59,27 +143,7 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
         </IconButton>
       </DialogTitle>
       <Divider />
-      <Box
-        component={"form"}
-        onSubmit={(ev) => {
-          ev.preventDefault();
-          //cadastrar um usuario - ESTADO GLOBAL
-          dispatch(
-            adicionarUsuario({
-              nome: nomeCadastro,
-              email: emailCadastro,
-              senha: senhaCadastro,
-            })
-          );
-          // limpar os campos de input
-          setNomeCadastro("");
-          setEmailCadastro("");
-          setSenhaCadastro("");
-
-          // fechar o modal
-          handleClose();
-        }}
-      >
+      <Box component="form" onSubmit={handleSignupUser}>
         <DialogContent>
           <Grid container spacing={1}>
             <Grid item xs={12}>
@@ -93,6 +157,10 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
                   backgroundColor: "#ffffff",
                   borderRadius: "8px",
                 }}
+                error={!errorNome.isValid}
+                helperText={errorNome.helperText}
+                inputProps={{ minLength: 3 }}
+                required
                 onChange={(event) => {
                   setNomeCadastro(event.currentTarget.value);
                 }}
@@ -102,6 +170,9 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
             <Grid item xs={12}>
               <TextField
                 fullWidth
+                error={!errorEmail.isValid}
+                helperText={errorEmail.helperText}
+                required
                 label="E-mail"
                 type="email"
                 variant="outlined"
@@ -121,6 +192,10 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
                 fullWidth
                 label="Senha"
                 type="password"
+                error={!errorSenha.isValid}
+                helperText={errorSenha.helperText}
+                inputProps={{ minLength: 6 }}
+                required
                 variant="outlined"
                 sx={{
                   color: "white",
@@ -139,6 +214,9 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
                 label="Insira a senha novamente"
                 type="password"
                 variant="outlined"
+                helperText={errorSenha.helperText}
+                inputProps={{ minLength: 6 }}
+                required
                 sx={{
                   color: "white",
                   borderRadius: "8px",
@@ -162,8 +240,10 @@ const ModalCadastroUsuario: React.FC<ModalCadastroUsuarioProps> = ({
             <Button
               type="submit"
               variant="contained"
-              onClick={handleClose}
               autoFocus
+              disabled={
+                !errorNome.isValid || !errorEmail.isValid || !errorSenha.isValid
+              }
             >
               Criar Conta
             </Button>
